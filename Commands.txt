@@ -1,0 +1,37 @@
+Login to DX HUB : sfdx force:auth:web:login -d -a DevHub
+Open the scratch org : sfdx force:org:open -u DevHub
+To connect and login to Sandbox : sfdx force:auth:web:login -r https://test.salesforce.com -a Pack001
+Create Scratch org: sfdx force:org:create -s -f config/project-scratch-def.json -a "SL-CoachingandEngagement SO"
+to delete Scratch org : sfdx force:org:delete -u "SL-CoachingandEngagement SO"
+Toc generate pwd for so : sfdx force:user:password:generate -u SL-CoachingandEngagement SO
+To create empty dx project : sfdx force:project:create -n geolocation 
+To get the changes from SO to DX project  : sfdx force:source:pull
+To get the changes from DX to SO :  sfdx force:source:push
+
+opne Scratch Org : sfdx force:org:open
+
+
+sfdx force:mdapi:retrieve -s -r ./temp -u my-dev-org -p DXExport
+sfdx force:mdapi:retrieve -s -r ./temp -u REXISDEV -p DXExport
+
+To Convert the mdt to DX package : sfdx force:mdapi:convert -r ./temp
+
+to Create componnets:
+Apex:class : sfdx force:apex:class:create -n AccountController -d force-app/main/default/classes
+lightning component : sfdx force:lightning:component:create -n AccountLocator -d force-app/main/default/aura
+Lightning evet: sfdx force:lightning:event:create -n AccountsLoaded -d force-app/main/default/aura
+
+GIT:
+git init
+git remote add origin <github ssh url>
+git add -A
+git commit -m "Add custom object and permset"
+git push origin master
+
+
+Data:
+To export data from SO to DX
+sfdx force:data:tree:export -q "SELECT Name, Location__Latitude__s, Location__Longitude__s FROM Account WHERE Location__Latitude__s != NULL AND Location__Longitude__s != NULL" -d ./data
+
+To import data from DX to SO
+sfdx force:data:tree:import --sobjecttreefiles data/Account.json
